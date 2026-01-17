@@ -1,0 +1,92 @@
+services:
+  zoneminder:
+    # https://github.com/zoneminder-containers/zoneminder-base/pkgs/container/zoneminder-base
+    image: ghcr.io/zoneminder-containers/zoneminder-base:release-1.36.37
+    restart: always
+    stop_grace_period: 45s
+    depends_on:
+      - db
+    ports:
+      - 8000:80
+    volumes:
+      - ./zm/data:/data
+      - ./zm/config:/config
+      - ./zm/log:/log
+      - type: tmpfs
+        target: /dev/shm
+        tmpfs:
+          size: 1000000000
+      - ./skin-modern:/var/www/html/skins/modern:ro
+    env_file:
+      - ./.env
+
+  db:
+    image: mariadb:12
+    restart: always
+    volumes:
+      - ./zm/db:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=zm
+    env_file:
+      - ./.env
+
+  # oauth2-proxy:
+  #   image: quay.io/oauth2-proxy/oauth2-proxy
+  #   container_name: zm_oauth2_proxy
+  #   environment:
+  #     - OAUTH2_PROXY_HTTP_ADDRESS=http://:4180
+  #     - OAUTH2_PROXY_UPSTREAMS=http://zoneminder:80
+  #     - OAUTH2_PROXY_AUTHENTICATED_EMAILS_FILE=/allowed/emails
+  #     - OAUTH2_PROXY_COOKIE_SECURE=true
+  #     - OAUTH2_PROXY_PROVIDER=google
+  #     - OAUTH2_PROXY_COOKIE_SECRET
+  #     - OAUTH2_PROXY_CLIENT_ID
+  #     - OAUTH2_PROXY_CLIENT_SECRET
+  #     - OAUTH2_PROXY_REDIRECT_URL
+  #   env_file: .env
+  #   ports:
+  #     - "xxxx:4180"
+  #   volumes:
+  #     - path/to/allowed:/allowed
+  #   restart: always
+
+  # Test RTSP streams
+  # Still stream: rtsp://mediamtx-still:8554/test from zoneminder container
+  # Moving stream: rtsp://mediamtx-motion:8554/test from zoneminder container
+  # mediamtx-still:
+  #   image: bluenviron/mediamtx:latest
+  #   restart: always
+  #   ports:
+  #     - 8554:8554   # RTSP
+  #     - 8888:8888   # HLS (optional, for browser preview)
+  # test-stream-still:
+  #   image: linuxserver/ffmpeg:latest
+  #   restart: always
+  #   depends_on:
+  #     - mediamtx-still
+  #   command: >
+  #     -re -f lavfi
+  #     -i "color=c=blue:size=1280x720:rate=15,drawtext=text='%{localtime}':fontsize=48:fontcolor=white:x=10:y=10"
+  #     -f lavfi -i "anullsrc=r=44100:cl=stereo"
+  #     -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1M
+  #     -c:a aac -b:a 128k
+  #     -f rtsp rtsp://mediamtx-still:8554/test
+
+  # mediamtx-motion:
+  #   image: bluenviron/mediamtx:latest
+  #   restart: always
+  #   ports:
+  #     - 8555:8554   # RTSP
+  #     - 8889:8888   # HLS (optional, for browser preview)
+  # test-stream-motion:
+  #   image: linuxserver/ffmpeg:latest
+  #   restart: always
+  #   depends_on:
+  #     - mediamtx-motion
+  #   command: >
+  #     -re -f lavfi
+  #     -i "testsrc=size=1280x720:rate=15,drawtext=text='%{localtime}':fontsize=48:fontcolor=white:x=10:y=10"
+  #     -f lavfi -i "anullsrc=r=44100:cl=stereo"
+  #     -c:v libx264 -preset ultrafast -tune zerolatency -b:v 1M
+  #     -c:a aac -b:a 128k
+  #     -f rtsp rtsp://mediamtx-motion:8554/test

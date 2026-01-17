@@ -1,0 +1,66 @@
+/**
+ * ZoneMinder Modern Skin - Main Stylesheet
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+ */
+
+@import "tailwindcss";
+@plugin "daisyui";
+
+/* Scan PHP files for class names */
+@source "../views/**/*.php";
+@source "../includes/**/*.php";
+
+@plugin "daisyui" {
+  themes: light --default, dark --prefersdark;
+}
+
+/* Drag & drop sorting */
+.drag-over {
+  @apply ring-2 ring-primary ring-offset-2 ring-offset-base-100;
+}
+
+.monitor-card[draggable="true"] {
+  @apply transition-all duration-150;
+}
+
+/* Alarm state borders for monitor stream */
+.monitor {
+  @apply transition-all duration-300;
+  border: 3px solid transparent;
+}
+
+.monitor.alarm {
+  border-color: #ff0000;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+}
+
+.monitor.alert {
+  border-color: #ffa500;
+  box-shadow: 0 0 20px rgba(255, 165, 0, 0.5);
+}
+
+.monitor.idle {
+  border-color: transparent;
+}
+
+/* Fullscreen mode - center video vertically */
+.monitor:fullscreen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: black;
+}

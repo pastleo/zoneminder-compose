@@ -1,0 +1,24 @@
+{
+  "name": "zoneminder-skin-modern",
+  "module": "src/main.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "clean": "rm -rf dist/*",
+    "build": "bun run clean && bun run build:css && bun run build:js",
+    "build:css": "bunx @tailwindcss/cli -i ./src/main.css -o ./dist/main.css",
+    "build:js": "bun build ./src/main.ts --outdir ./dist --minify --splitting --public-path /skins/modern/dist/",
+    "watch": "bun run clean && bun run watch:css & bun run watch:js",
+    "watch:css": "bunx @tailwindcss/cli -i ./src/main.css -o ./dist/main.css --watch",
+    "watch:js": "bun build ./src/main.ts --outdir ./dist --splitting --public-path /skins/modern/dist/ --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.18",
+    "@types/bun": "latest",
+    "daisyui": "^5.5.14",
+    "tailwindcss": "^4.1.18"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
