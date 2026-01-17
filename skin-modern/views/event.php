@@ -182,7 +182,7 @@ xhtmlHeaders(__FILE__, translate('Event').' '.$Event->Id());
             <?php echo translate('YourBrowserDoesntSupportVideo') ?>
           </video>
 <?php } else { ?>
-          <div id="imageFeed" class="relative w-full h-full flex items-center justify-center [&>img]:max-w-full [&>img]:max-h-full [&>img]:w-auto [&>img]:h-auto">
+          <div id="imageFeed" class="relative w-full h-full flex items-center justify-center [&>img]:w-full [&>img]:!h-full [&>img]:object-contain">
 <?php
   $streamSrc = $Event->getStreamSrc(array('mode'=>'jpeg', 'frame'=>$fid, 'scale'=>$scale, 'rate'=>$rate, 'maxfps'=>ZM_WEB_VIDEO_MAXFPS, 'replay'=>$replayMode, 'connkey'=>$connkey),'&amp;');
   if ( canStreamNative() ) {

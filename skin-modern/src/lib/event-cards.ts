@@ -236,7 +236,7 @@ export class EventCards {
     const diskSpace = event.DiskSpace || '-';
 
     const thumbnailHtml = event.imgHtml
-      ? `<a href="?view=event&eid=${eid}${filterQuery}" class="block aspect-video bg-base-300 rounded-lg overflow-hidden mb-2">${this.resizeThumbnail(event.imgHtml)}</a>`
+      ? `<a href="?view=event&eid=${eid}${filterQuery}" class="block aspect-video bg-base-300 rounded-lg overflow-hidden mb-2 [&>img]:w-full [&>img]:h-full [&>img]:object-cover">${this.resizeThumbnail(event.imgHtml)}</a>`
       : '';
 
     const checkboxHtml = showCheckboxes

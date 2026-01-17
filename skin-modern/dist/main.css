@@ -6652,24 +6652,29 @@
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
-  .\[\&\>img\]\:h-auto {
+  .\[\&\>img\]\:\!h-full {
     &>img {
-      height: auto;
+      height: 100% !important;
     }
   }
-  .\[\&\>img\]\:max-h-full {
+  .\[\&\>img\]\:h-full {
     &>img {
-      max-height: 100%;
+      height: 100%;
     }
   }
-  .\[\&\>img\]\:w-auto {
+  .\[\&\>img\]\:w-full {
     &>img {
-      width: auto;
+      width: 100%;
     }
   }
-  .\[\&\>img\]\:max-w-full {
+  .\[\&\>img\]\:object-contain {
     &>img {
-      max-width: 100%;
+      object-fit: contain;
+    }
+  }
+  .\[\&\>img\]\:object-cover {
+    &>img {
+      object-fit: cover;
     }
   }
 }
