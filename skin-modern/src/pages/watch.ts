@@ -18,6 +18,7 @@
 
 import { MonitorStream } from '../lib/monitor-stream.ts';
 import { EventCards } from '../lib/event-cards.ts';
+import { createModal, showModal } from '../lib/modal.ts';
 
 const OVERLAY_HIDE_DELAY = 3000;
 
@@ -32,6 +33,43 @@ export function init(): void {
   initToolbarButtons();
   initOverlayControls();
   initAlarmControls();
+  initTalkback();
+}
+
+function initTalkback(): void {
+  const button = document.getElementById('talkbackBtn');
+  const source = document.body.dataset.talkbackSource;
+  if (!button || !source) return;
+
+  const modal = createModal({
+    id: 'talkbackModal',
+    title: 'Talk',
+    content: '<div id="talkbackViewer"></div>',
+    className: 'talkback-modal',
+    actions: [
+      { label: 'Close', className: 'btn btn-primary' },
+    ],
+    onClose: () => {
+      document.getElementById('talkbackViewer')?.replaceChildren();
+    },
+  });
+
+  button.addEventListener('click', () => {
+    showModal('talkbackModal');
+
+    const viewer = modal.querySelector('#talkbackViewer');
+    if (!viewer) return;
+
+    const iframe = document.createElement('iframe');
+    const params = new URLSearchParams({
+      src: source,
+      media: 'video+audio+microphone',
+    });
+    iframe.src = `/go2rtc/webrtc.html?${params}`;
+    iframe.allow = 'microphone; autoplay';
+    iframe.title = `Talk to ${source}`;
+    viewer.replaceChildren(iframe);
+  });
 }
 
 function getMonitorData() {

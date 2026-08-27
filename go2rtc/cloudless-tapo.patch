@@ -1,0 +1,15 @@
+diff --git a/pkg/tapo/client.go b/pkg/tapo/client.go
+index e52250c..dbcc8e5 100644
+--- a/pkg/tapo/client.go
++++ b/pkg/tapo/client.go
+@@ -318,6 +318,10 @@ func dial(req *http.Request, brand, username, password string) (net.Conn, *http.
+ 	if err != nil {
+ 		return nil, nil, err
+ 	}
++	if res.StatusCode == http.StatusOK && strings.Contains(res.Header.Get("Key-Exchange"), `username="none"`) {
++		return conn, res, nil
++	}
++
+ 	_, _ = io.Copy(io.Discard, res.Body) // discard leftovers
+ 	_ = res.Body.Close()                 // ignore response body
+ 

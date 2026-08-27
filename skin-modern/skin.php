@@ -24,7 +24,6 @@ $MODERN_READY_VIEWS = [
   'options',
   'watch',
   'events',
-  'monitor',
   'event',
 ];
 

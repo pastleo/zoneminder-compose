@@ -22,7 +22,6 @@ const pages: Record<string, () => Promise<{ init: () => void }>> = {
   watch: () => import('./pages/watch.ts'),
   options: () => import('./pages/options.ts'),
   events: () => import('./pages/events.ts'),
-  monitor: () => import('./pages/monitor.ts'),
   event: () => import('./pages/event.ts'),
 };
 

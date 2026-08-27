@@ -8,6 +8,8 @@ services:
       - db
     ports:
       - 8000:80
+      - "8555:8555/tcp"
+      - "8555:8555/udp"
     volumes:
       - ./zm/data:/data
       - ./zm/config:/config
@@ -17,8 +19,33 @@ services:
         tmpfs:
           size: 1000000000
       - ./skin-modern:/var/www/html/skins/modern:ro
+      - ./nginx/go2rtc.conf:/etc/nginx/conf.d/go2rtc.conf:ro
     env_file:
       - ./.env
+
+  go2rtc:
+    image: zoneminder-compose-go2rtc:1.9.14-cloudless
+    build:
+      context: ./go2rtc
+      args:
+        GO2RTC_VERSION: 1.9.14
+    restart: always
+    depends_on:
+      - zoneminder
+    network_mode: service:zoneminder
+    volumes:
+      - ./go2rtc.yaml:/config/go2rtc.yaml:ro
+
+  zoneminder-config:
+    image: mariadb:12
+    restart: "no"
+    depends_on:
+      - zoneminder
+    env_file:
+      - ./.env
+    entrypoint: ["/bin/sh", "/configure-zoneminder.sh"]
+    volumes:
+      - ./configure-zoneminder.sh:/configure-zoneminder.sh:ro
 
   db:
     image: mariadb:12

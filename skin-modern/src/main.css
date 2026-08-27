@@ -64,3 +64,23 @@
   align-items: center;
   background: black;
 }
+
+.talkback-modal .modal-box {
+  width: calc(100% - 1.5rem);
+  max-width: 64rem;
+}
+
+.talkback-modal iframe {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: 16rem;
+  border: 0;
+  border-radius: var(--radius-box);
+  background: black;
+}
+
+@media (max-width: 40rem) {
+  .talkback-modal iframe {
+    min-height: 12rem;
+  }
+}

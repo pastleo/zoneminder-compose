@@ -1,0 +1,11 @@
+api:
+  listen: ":1984"
+  base_path: "/go2rtc"
+
+rtsp:
+  listen: ""
+
+webrtc:
+  listen: ":8555"
+  candidates:
+    - "192.0.2.10:8555"

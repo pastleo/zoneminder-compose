@@ -1,4 +1,8 @@
 .env
+*.swp
+.playwright-mcp/
 compose.yml
+go2rtc.yaml
 zm
 zoneminder
+allowed/

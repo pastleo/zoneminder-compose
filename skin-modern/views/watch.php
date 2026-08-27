@@ -40,6 +40,15 @@ foreach ( getSkinIncludes('includes/video-controls.php') as $includeFile )
   require_once $includeFile;
 $monitor = new ZM\Monitor($mid);
 
+$talkbackSource = null;
+if ( canView('Control') && $monitor->Type() === 'Ffmpeg' ) {
+  $monitorUrl = parse_url($monitor->Path());
+  if ( is_array($monitorUrl) && isset($monitorUrl['scheme'], $monitorUrl['host']) && in_array(strtolower($monitorUrl['scheme']), array('rtsp', 'rtsps'), true) ) {
+    $talkbackHost = filter_var($monitorUrl['host'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? '['.$monitorUrl['host'].']' : $monitorUrl['host'];
+    $talkbackSource = 'tapo://unused@'.$talkbackHost;
+  }
+}
+
 #Whether to show the controls button
 $showPtzControls = ( ZM_OPT_CONTROL && $monitor->Controllable() && canView('Control') && $monitor->Type() != 'WebSite' );
 
@@ -73,6 +82,9 @@ xhtmlHeaders(__FILE__, $monitor->Name().' - '.translate('Feed'));
   data-stream-replay-buffer="<?php echo $monitor->StreamReplayBuffer() ?>"
   data-status-refresh="<?php echo ZM_WEB_REFRESH_STATUS ?>"
   data-can-edit-monitors="<?php echo canEdit('Monitors') ? '1' : '0' ?>"
+<?php if ( $talkbackSource !== null ) { ?>
+  data-talkback-source="<?php echo htmlspecialchars($talkbackSource, ENT_QUOTES) ?>"
+<?php } ?>
 >
 <noscript>
 <div class="alert alert-error">
@@ -218,6 +230,15 @@ echo getStreamHTML($monitor, array('scale'=>$scale, 'mode'=>'single'));
               <span class="badge badge-primary badge-outline"><?php echo translate('Fn'.$monitor->Function()) ?></span>
               <span class="badge badge-secondary badge-outline"><?php echo $monitor->Width() ?>x<?php echo $monitor->Height() ?></span>
             </div>
+<?php if ( $talkbackSource !== null ) { ?>
+            <button type="button" id="talkbackBtn" class="btn btn-primary btn-sm mt-4 w-full gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Z"/>
+                <path d="M17 11a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21H8v2h8v-2h-3v-3.08A7 7 0 0 0 19 11h-2Z"/>
+              </svg>
+              Talk (Tapo cameras only)
+            </button>
+<?php } ?>
           </div>
         </div>
 
